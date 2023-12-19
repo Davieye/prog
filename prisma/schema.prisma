@@ -1,0 +1,53 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+datasource db {
+  provider = "sqlite"
+  url      = env("DATABASE_URL")
+}
+
+model User {
+  id       Int    @id @default(autoincrement())
+  name     String @unique
+  password String
+  pixelArts PixelArt[]
+  posts    Post[]
+  
+}
+
+model Post {
+  id        Int     @id @default(autoincrement())
+  title     String
+  content   String?
+  published Boolean @default(false)
+  author    User    @relation(fields: [authorId], references: [id])
+  authorId  Int
+}
+
+
+// session with a name that has messages
+model Session {
+  id       Int       @id @default(autoincrement())
+  name     String    @unique
+  messages Message[]
+}
+
+// a message that belongs to a session
+model Message {
+  id        Int      @id @default(autoincrement())
+  content   String
+  session   Session? @relation(fields: [sessionId], references: [id])
+  sessionId Int?
+}
+
+model PixelArt {
+  id      Int      @id @default(autoincrement())
+  data    String
+  users   User[]
+  }
+
+
